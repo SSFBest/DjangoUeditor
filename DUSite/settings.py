@@ -57,6 +57,7 @@ MEDIA_ROOT = os.path.join(PROJECT_PATH,'data/').replace('\\','/')
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
+BASEURL='http://www.youxi16.com'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -154,6 +155,6 @@ LOGGING = {
 }
 
 #以下可以自行配置ueditor的配置项
-UEDITOR_SETTINGS = {
-    "test":1
-}
+# UEDITOR_SETTINGS = {
+#     "test":1
+# }

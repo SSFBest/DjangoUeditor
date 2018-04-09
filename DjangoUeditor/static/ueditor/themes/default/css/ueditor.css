@@ -1901,3 +1901,12 @@ div.edui-box {
 .edui-default  .edui-pastecontainer .edui-button  .edui-state-hover .edui-plaintxticon{
     background-position: -72px -34px;
 }
+.edui-for-tkueditor .edui-icon { 
+background: url('//img.alicdn.com/tps/i3/T1DD1HXt8dXXaIG7vX-16-48.gif') no-repeat center 2px; 
+}
+  
+.edui-for-tkueditor .edui-dialog-content { 
+     width: 557px; 
+     height: 250px;
+     overflow: hidden;
+}

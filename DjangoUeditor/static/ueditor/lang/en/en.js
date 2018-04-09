@@ -680,5 +680,6 @@ UE.I18N['en'] = {
     },
     'autosave': {
         'success':'Local conservation success'
-    }
+    },
+    tkueditor:{}
 };

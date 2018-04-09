@@ -6,6 +6,10 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import datetime,random
 import urllib
+import hashlib
+from yuelianglib.common.utils import watermark
+from yuelianglib.libs.watermark import position,img_watermark
+from PIL import ImageFile
 
 def get_path_format_vars():
     return {
@@ -18,16 +22,23 @@ def get_path_format_vars():
         "rnd":random.randrange(100,999)
     }
 
-#保存上传的文件
-def save_upload_file(PostFile,FilePath):
+def save_upload_file(PostFile,FilePath,is_watermark=True):
+    img=None
     try:
-        f = open(FilePath, 'wb')
+        # f = open(FilePath, 'wb')
+        fp = ImageFile.Parser()
         for chunk in PostFile.chunks():
-            f.write(chunk)
+            # f.write(chunk)
+            fp.feed(chunk)
+        img=fp.close()
+        if is_watermark:
+            img = watermark(img, img_watermark,position)
+        img.save(FilePath,'jpeg',quality=100)
+        # print img,'dddddddddddddddddddd'
     except Exception,E:
-        f.close()
+        # img.close()
         return u"写入文件错误:"+ E.message
-    f.close()
+    # fp.close()
     return u"SUCCESS"
 
 
@@ -72,6 +83,7 @@ def list_files(request):
         "listfile":USettings.UEditorUploadSettings.get("fileManagerListPath",""),
         "listimage":USettings.UEditorUploadSettings.get("imageManagerListPath","")
     }
+
     #取得参数
     list_size=long(request.GET.get("size",listSize[action]))
     list_start=long(request.GET.get("start",0))
@@ -79,6 +91,7 @@ def list_files(request):
     files=[]
     root_path=os.path.join(USettings.gSettings.MEDIA_ROOT,listpath[action]).replace("\\","/")
     files=get_files(root_path,root_path,allowFiles[action])
+    # print files
 
     if (len(files)==0):
         return_info={
@@ -111,7 +124,8 @@ def get_files(root_path,cur_path, allow_types=[]):
             is_allow_list= (len(allow_types)==0) or (ext in allow_types)
             if is_allow_list:
                 files.append({
-                    "url":urllib.basejoin(USettings.gSettings.MEDIA_URL ,os.path.join(os.path.relpath(cur_path,root_path),item).replace("\\","/" )),
+                    # "url":urllib.basejoin(USettings.gSettings.MEDIA_URL ,os.path.join(os.path.relpath(cur_path,root_path),item).replace("\\","/" )),
+                    "url":os.path.join(os.path.relpath(cur_path,root_path),item).replace("\\","/" ),
                     "mtime":os.path.getmtime(item_fullname)
                 })
 
@@ -133,7 +147,7 @@ def UploadFile(request):
         "uploadvideo":"videoFieldName",
     }
     UploadFieldName=request.GET.get(upload_field_name[action],USettings.UEditorUploadSettings.get(action,"upfile"))
-
+    is_watermark=request.GET.get('watermark',None)
     #上传涂鸦，涂鸦是采用base64编码上传的，需要单独处理
     if action=="uploadscrawl":
         upload_file_name="scrawl.png"
@@ -183,7 +197,7 @@ def UploadFile(request):
 
     path_format_var=get_path_format_vars()
     path_format_var.update({
-        "basename":upload_original_name,
+        "basename":hashlib.md5(upload_original_name).hexdigest()[0:8],
         "extname":upload_original_ext[1:],
         "filename":upload_file_name,
     })
@@ -196,11 +210,12 @@ def UploadFile(request):
             state=save_scrawl_file(request,os.path.join(OutputPath,OutputFile))
         else:
             #保存到文件中，如果保存错误，需要返回ERROR
-            state=save_upload_file(file,os.path.join(OutputPath,OutputFile))
+            state=save_upload_file(file,os.path.join(OutputPath,OutputFile),is_watermark)
 
     #返回数据
     return_info = {
-        'url': urllib.basejoin(USettings.gSettings.MEDIA_URL , OutputPathFormat) ,                # 保存后的文件名称
+        # 'url': urllib.basejoin(USettings.gSettings.MEDIA_URL , OutputPathFormat) ,                # 保存后的文件名称
+        'url': OutputPathFormat,                # 保存后的文件名称
         'original': upload_file_name,                  #原始文件名
         'type': upload_original_ext,
         'state': state,                         #上传状态，成功时返回SUCCESS,其他任何值将原样返回至图片上传框中
@@ -232,7 +247,7 @@ def catcher_remote_image(request):
         #文件类型检验
         if remote_original_ext  in allow_type:
             path_format_var.update({
-                "basename":remote_original_name,
+                "basename":hashlib.md5(remote_original_name).hexdigest()[0:8],
                 "extname":remote_original_ext[1:],
                 "filename":remote_original_name
             })
@@ -255,7 +270,8 @@ def catcher_remote_image(request):
 
             catcher_infos.append({
                 "state":state,
-                "url":urllib.basejoin(USettings.gSettings.MEDIA_URL , o_path_format),
+                # "url":urllib.basejoin(USettings.gSettings.MEDIA_URL , o_path_format),
+                "url": o_path_format,
                 "size":os.path.getsize(o_filename),
                 "title":os.path.basename(o_file),
                 "original":remote_file_name,

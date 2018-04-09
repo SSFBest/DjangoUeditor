@@ -44,12 +44,12 @@
             'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
             'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
             'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
-            'print', 'preview', 'searchreplace', 'help', 'drafts'
+            'print', 'preview', 'searchreplace', 'help', 'drafts','tkueditor'
         ]]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
-        //,labelMap:{
-        //    'anchor':'', 'undo':''
-        //}
+        ,labelMap:{
+           'anchor':'', 'undo':'','tkueditor':'淘点金'
+        }
 
         //语言配置项,默认是zh-cn。有需要的话也可以使用如下这样的方式来自动多语言切换，当然，前提条件是lang文件夹下存在对应的语言文件：
         //lang值也可以通过自动获取 (navigator.language||navigator.browserLanguage ||navigator.userLanguage).toLowerCase()
@@ -67,7 +67,7 @@
         //,charset:"utf-8"
 
         //若实例化编辑器的页面手动修改的domain，此处需要设置为true
-        //,customDomain:false
+        ,customDomain:true
 
         //常用配置项目
         //,isShow : true    //默认显示编辑器

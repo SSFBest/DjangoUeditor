@@ -6,17 +6,25 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import datetime,random
 import urllib
+from yuelianglib.common.utils import watermark
+from yuelianglib.libs.watermark import position,img_watermark
 
 #保存上传的文件
 def save_upload_file(PostFile,FilePath):
+    img=None
     try:
-        f = open(FilePath, 'wb')
+        # f = open(FilePath, 'wb')
+        fp = ImageFile.Parser()
         for chunk in PostFile.chunks():
-            f.write(chunk)
+            # f.write(chunk)
+            fp.feed(chunk)
+        img=fp.close()
+        img = watermark(img, img_watermark,position)
+        img.save(FilePath,'jpeg',quality=100)
     except Exception,E:
-        f.close()
+        # img.close()
         return u"写入文件错误:"+ E.message
-    f.close()
+    # fp.close()
     return u"SUCCESS"
 
 

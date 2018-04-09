@@ -22,7 +22,6 @@ def calc_path(OutputPath, instance=None):
             OutputPath = datetime.datetime.now().strftime(OutputPath)
         except:
             pass
-
     return OutputPath
 
 #width=600, height=300, toolbars="full", imagePath="", filePath="", upload_settings={},
@@ -53,8 +52,7 @@ class UEditorWidget(forms.Textarea):
         })
         #保存
         self._upload_settings =self.upload_settings.copy()
-        self.recalc_path(None)
-
+        # self.recalc_path(None)
         self.ueditor_settings ={
             'toolbars':toolbars,
             'initialFrameWidth':width,
@@ -124,24 +122,23 @@ class UEditorWidget(forms.Textarea):
 
         uSettings["settings"] = self.ueditor_settings.copy()
         uSettings["settings"].update({
-            "serverUrl": "/ueditor/controller/?%s" % urlencode(self._upload_settings)
+            "serverUrl": "%s/ueditor/controller/?%s" %(settings.BASEURL, urlencode(self._upload_settings)), 
+            # "customDomain":True
         })
         #生成事件侦听
         if self.event_handler:
             uSettings["bindEvents"]=self.event_handler.render(editor_id)
-
         context = {
             'UEditor': uSettings,
-            'STATIC_URL': settings.STATIC_URL,
-            'STATIC_ROOT': settings.STATIC_ROOT,
-            'MEDIA_URL': settings.MEDIA_URL,
-            'MEDIA_ROOT': settings.MEDIA_ROOT
+            'domain':settings.BASEURL.split('//')[1]
         }
         return mark_safe(render_to_string('ueditor.html', context))
 
     class Media:
-        js = ("ueditor/ueditor.config.js",
-              "ueditor/ueditor.all.min.js")
+        # js = ("ueditor/ueditor.config.js",
+        #       "ueditor/ueditor.all.min.js")
+        js = ("%sueditor/ueditor.config.js"%(settings.STATIC_URL),
+              "%sueditor/ueditor.all.js"%(settings.STATIC_URL))
 
 
 class AdminUEditorWidget(AdminTextareaWidget,UEditorWidget ):

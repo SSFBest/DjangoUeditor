@@ -665,5 +665,6 @@ UE.I18N['zh-cn'] = {
     'autosave': {
         'saving':'保存中...',
         'success':'本地保存成功'
-    }
+    },
+    tkueditor:{}
 };
