@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import datetime,random
 import urllib
 import hashlib
-from yuelianglib.common.utils import watermark
+from yuelianglib.common.image import watermark
 from yuelianglib.libs.watermark import position,img_watermark
 from PIL import ImageFile
 

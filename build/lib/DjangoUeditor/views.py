@@ -6,7 +6,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import datetime,random
 import urllib
-from yuelianglib.common.utils import watermark
+from yuelianglib.common.image import watermark
 from yuelianglib.libs.watermark import position,img_watermark
 
 #保存上传的文件
