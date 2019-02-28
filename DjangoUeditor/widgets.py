@@ -122,7 +122,7 @@ class UEditorWidget(forms.Textarea):
 
         uSettings["settings"] = self.ueditor_settings.copy()
         uSettings["settings"].update({
-            "serverUrl": "%s/ueditor/controller/?%s" %(settings.BASEURL, urlencode(self._upload_settings)), 
+            "serverUrl": "%s/ueditor/controller/?%s" %(settings.BASEURL, urlencode(self._upload_settings)),
             # "customDomain":True
         })
         #生成事件侦听
@@ -130,6 +130,7 @@ class UEditorWidget(forms.Textarea):
             uSettings["bindEvents"]=self.event_handler.render(editor_id)
         context = {
             'UEditor': uSettings,
+            # 'domain': 'youxi16.com'
             'domain':settings.BASEURL.split('//')[1]
         }
         return mark_safe(render_to_string('ueditor.html', context))
@@ -137,8 +138,8 @@ class UEditorWidget(forms.Textarea):
     class Media:
         # js = ("ueditor/ueditor.config.js",
         #       "ueditor/ueditor.all.min.js")
-        js = ("%sueditor/ueditor.config.js"%(settings.STATIC_URL),
-              "%sueditor/ueditor.all.js"%(settings.STATIC_URL))
+        js = ("%s/static/ueditor/ueditor.config.js"%(settings.BASEURL),
+              "%s/static/ueditor/ueditor.all.js"%(settings.BASEURL))
 
 
 class AdminUEditorWidget(AdminTextareaWidget,UEditorWidget ):
